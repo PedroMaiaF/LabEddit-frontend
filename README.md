@@ -1,1 +1,0 @@
-# LabEddit-frontend
