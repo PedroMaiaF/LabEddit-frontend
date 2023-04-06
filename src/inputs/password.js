@@ -35,7 +35,7 @@ export const PasswordInput = ({ isValid, value, onChange }) => {
                     </Button>
                 </InputRightElement>
             </InputGroup>
-            {!isValid ? (<FormErrorMessage as="p"> Sua senha deve possuir entre 4 a 12 caracteres, com 1 letra maiuscula, 1 letra minúscula e 1 número
+            {!isValid ? (<FormErrorMessage as="p"> Sua senha deve possuir entre 4 a 12 caracteres, sendo 1 letra maiuscula, 1 letra minúscula, 1 número
             </FormErrorMessage>) : undefined}
         </FormControl>
     )

@@ -1,5 +1,6 @@
 import { goToLoginPage } from '../../routes/coordinator';
-import { Box, Heading, Text, Button } from '@chakra-ui/react';
+  
+  import { Box, Heading, Text, Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 export default function NotFoundPage() {

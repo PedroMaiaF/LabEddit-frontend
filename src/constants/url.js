@@ -15,6 +15,78 @@ export const Signup = async (body)=>{
     return data
 }
 
+export const ListPosts = async (body)=>{
+    const {data} = await axios.get(`${BASE_URL}/posts`,
+    {
+        headers:{
+            Authorization: localStorage.getItem("labeddit.token")
+        }
+    })
+    return data
+}
 
+
+export const PostWithComments = async (id)=>{
+    const {data} = await axios.get(`${BASE_URL}/posts/${id}/comment`,
+    {
+        headers:{
+            Authorization: localStorage.getItem("labeddit.token")
+        }
+    })
+    return data
+}
+
+
+
+export const CreatePost= async (body)=>{
+    
+    const {data} = await axios.post(`${BASE_URL}/posts`,
+    body,
+    {
+        headers:{
+            Authorization: localStorage.getItem("labeddit.token")
+        }
+    })
+    return data
+}
+
+
+export const CreateLikeDislikePost= async (id,body)=>{
+    
+    const {data} = await axios.post(`${BASE_URL}/posts/${id}/like`,
+    body,
+    {
+        headers:{
+            Authorization: localStorage.getItem("labeddit.token")
+        }
+    })
+    return data
+}
+
+
+export const CreateLikeDislikeComment= async (idPost,body,idComment)=>{
+    
+    const {data} = await axios.post(`${BASE_URL}/posts/${idPost}/comment/${idComment}/like`,
+    body,
+    {
+        headers:{
+            Authorization: localStorage.getItem("labeddit.token")
+        }
+    })
+    return data
+}
+
+
+export const CreateComment= async (id,body)=>{
+    
+    const {data} = await axios.post(`${BASE_URL}/posts/${id}/comment`,
+    body,
+    {
+        headers:{
+            Authorization: localStorage.getItem("labeddit.token")
+        }
+    })
+    return data
+}
 
 
