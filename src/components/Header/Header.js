@@ -1,123 +1,115 @@
-import {
-    Box,
-    Flex,
-    Button,
-    useColorModeValue,
-    useColorMode,
+import { HeaderContainer } from "./Header.Style"
+import logo from "../../assets/mini-logo-labenu.svg"
+import status from "../../assets/status-bar.svg"
+import close from "../../assets/close-icon.svg"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useContext } from "react"
+import { goToPostPage, goToLoginPage } from "../../routes/coordinator"
+import { 
+    Button, 
     Image,
-    Text,
-    ButtonGroup,
-    Spacer,
+    Link
 } from '@chakra-ui/react';
-import { MoonIcon, SunIcon, } from '@chakra-ui/icons';
-import { useNavigate } from "react-router-dom";
-import Vector1 from "../../assets/Vector1.svg"
-import Vector2 from "../../assets/Vector2.svg"
-import Vector3 from "../../assets/Vector3.svg"
-import Vector4 from "../../assets/Vector4.svg"
-import { goToLoginPage } from '../../routes/coordinator';
-import { goToFeedPage } from '../../routes/coordinator';
-import { GrClose } from 'react-icons/gr'
-import { GlobalContext } from '../../contexts/GlobalContext';
-import { useContext } from 'react';
+import { CloseButtonIcon } from "../Icons/CloseButtonIcon"
 
-export default function Header({ isOnSignupPage, isOnFeedPage, isOnPostDetailPage}) {
-    
-    const { colorMode, toggleColorMode } = useColorMode();
-    const context = useContext(GlobalContext)
+
+const Header = ({ isLoggedIn }) => {
     const navigate = useNavigate()
-
+    const location = useLocation()
+    // const context = useContext(GlobalContext)
+    const params = useParams()
 
     const logout = () => {
-        window.localStorage.removeItem("labeddit.token")
-        context.setIsAuth(false)
-        goToLoginPage(navigate)
+        if(isLoggedIn) {
+            window.localStorage.removeItem('labeddit-token')
+        }
+        goToLoginPage(navigate)        
     }
 
-
-    return (
-        <>
-            <Box bg={useColorModeValue('#EDEDED', 'gray.900')} h={"50px"}>
-
-                <Flex minWidth='max-content' alignItems='center' gap='2'>
-                    <Spacer />
-                    {isOnPostDetailPage &&
+    const renderHeader = () => {
+        switch (location.pathname) {
+            case "/":
+                return (
+                    <HeaderContainer>
+                        <CloseButtonIcon visibility={'hidden'} onClick={() => goToPostPage(navigate)} />
+                        <Image src={logo} alt="logo Labenu"/>
                         <Button
-                            as={Button}
-                            rounded={'full'}
+                            fontFamily={"Noto Sans"}
                             variant={'link'}
-                            cursor={'pointer'}
-                            minW={0}
-                            onClick={() => goToFeedPage(navigate)}>
-                            <GrClose borderColor={'#A3A3A3'} />
-                        </Button>}
-                    <Spacer />
-                    <Spacer />
-                    <Spacer />
-                    <Button onClick={() => goToFeedPage(navigate)}>
-                        <Box p='4' alignItems='center'>
-
-                            <Flex justifyContent={'center'} width={"14.01px"} height={"13.63px"} >
-                                <Image src={Vector1} />
-                                <Image src={Vector2} />
-                            </Flex>
-                            <Flex justifyContent={'center'} width={"14.01px"} height={"13.63px"}>
-                                <Image src={Vector3} />
-                                <Image src={Vector4} />
-                            </Flex>
-
-                        </Box>
-                    </Button>
-                    <Spacer />
-                    <ButtonGroup gap='2' marginRight={"10px"}>
-                        <Button onClick={toggleColorMode}>
-                            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+                            colorScheme={"blue"}
+                            onClick={logout}                            
+                        >Logout
                         </Button>
-                        {isOnSignupPage &&
-                            <Button
-                                as={Button}
-                                rounded={'full'}
-                                variant={'link'}
-                                cursor={'pointer'}
-                                minW={0}
-                                onClick={() => goToLoginPage(navigate)}>
-                                <Text color={" #4088CB"}>Entrar</Text>
-                            </Button>
-                        }
-                        {isOnFeedPage &&
-                            <Button
-                                as={Button}
-                                rounded={'full'}
-                                variant={'link'}
-                                cursor={'pointer'}
-                                minW={0}
-                                onClick={logout}>
-                                <Text color={" #4088CB"}>Sair</Text>
-                            </Button>
-                        }
-                        {isOnPostDetailPage &&
+                    </HeaderContainer>
+                )
+            case "/signup":
+                return (
+                    <HeaderContainer>
+                        <CloseButtonIcon visibility={'hidden'} onClick={() => goToPostPage(navigate)} />
+                        <Image src={logo} alt="logo Labenu"/>
+                        <Button
+                            fontFamily={"Noto Sans"}
+                            variant={'link'}
+                            colorScheme={"blue"}
+                            onClick={() => goToPostPage(navigate)}
+                        >Entrar
+                        </Button>
+                    </HeaderContainer>
+                )
+            
+            case `/comments/${params.postId}`:
+                return (
+                    <HeaderContainer>
+                        <CloseButtonIcon onClick={() => goToPostPage(navigate)} />
+                    
+                        <Image src={logo} alt="logo Labenu"/>
+                        <Button
+                            fontFamily={"Noto Sans"}
+                            variant={'link'}
+                            colorScheme={"blue"}
+                            onClick={logout} 
+                        >Logout
+                        </Button>
+                    </HeaderContainer>
+                )
 
-
-
-                            <Button
-                                as={Button}
-                                rounded={'full'}
-                                variant={'link'}
-                                cursor={'pointer'}
-                                minW={0}
-                                onClick={logout}>
-                                <Text color={" #4088CB"}>Sair</Text>
-                            </Button>
-
-                        }
-
-
-                    </ButtonGroup>
-                </Flex>
-
-
-
-            </Box >
+            case `/*`:
+                return (
+                    <HeaderContainer>
+                        <CloseButtonIcon onClick={() => goToPostPage(navigate)} />
+                        <Image src={logo} alt="logo Labenu"/>
+                        <Button
+                            fontFamily={"Noto Sans"}
+                            variant={'link'}
+                            colorScheme={"blue"}
+                            onClick={logout} 
+                        >Logout
+                        </Button>
+                    </HeaderContainer>
+                )
+            default:
+                return (
+                    <>
+                        <CloseButtonIcon visibility={'hidden'} onClick={() => goToPostPage(navigate)} />
+                        <Image visibility={'hidden'} src={logo} alt="logo Labenu"/>
+                        <Button
+                            fontFamily={"Noto Sans"}
+                            variant={'link'}
+                            colorScheme={"blue"}
+                            onClick={logout} 
+                            visibility={'hidden'}
+                        >Logout
+                        </Button>
+                    </>
+                )
+        }
+    }    
+        
+    return(
+        <>
+            {renderHeader()}
         </>
-    );
+    )
 }
+
+export default Header

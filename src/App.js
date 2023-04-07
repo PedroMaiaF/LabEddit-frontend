@@ -1,33 +1,58 @@
-import { ChakraProvider } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { GlobalContext } from "./contexts/GlobalContext";
+import React, { useEffect, useState } from "react"
+import { ChakraProvider } from '@chakra-ui/react'
+import { GlobalContext } from "./contexts/GlobalContext"
+import Router  from "./routes/Router"
+import axios from "axios"
+import { BASE_URL } from "./constants/constants"
 
-import Router from "./routes/Router";
 
-function App() {
-
-  const [ isAuth, setIsAuth ] = useState(false)
+export default function App() {
+  const [ posts, setPosts ] = useState([])
+  const [ isLoading, setIsLoading ] = useState(false)
+  const [ isLoggedIn, setIsLoggedIn ] = useState(false)
 
   useEffect(() => {
-      const token = window.localStorage.getItem("labeddit.token")
+    const token = window.localStorage.getItem('labeddit-token')
 
-      if (token) {
-          setIsAuth(true)
-      }
+    if (token) {
+      fetchPosts()
+    }
   }, [])
 
-  const context = {
-      isAuth: isAuth,
-      setIsAuth: setIsAuth
+  const fetchPosts = async () => {
+    try {
+      setIsLoading(true)
+      const token = window.localStorage.getItem('labeddit-token')
+
+      const config = {
+        headers: {
+          Authorization: token
+        }
+      }
+
+      const response = await axios.get(BASE_URL + "/posts", config)
+      setPosts(response.data)
+      setIsLoading(false)
+    } catch (error) {
+     
+    }
   }
+
+  const context = {
+    posts,
+    fetchPosts,
+    isLoading,
+    setIsLoading,
+    isLoggedIn,
+    setIsLoggedIn
+  }
+  
   return (
-    <GlobalContext.Provider value={context}>
-       <ChakraProvider resetCSS>
-      
-          <Router />
-          </ChakraProvider>
-          </GlobalContext.Provider>
-  );
+    <ChakraProvider resetCSS  >
+      <GlobalContext.Provider value={context}>
+        <Router/> 
+      </GlobalContext.Provider>
+    </ChakraProvider>
+  )
 }
 
-export default App;

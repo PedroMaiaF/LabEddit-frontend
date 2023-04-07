@@ -1,24 +1,24 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LoginPage from "../pages/LoginPage/LoginPage";
-import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
-import SignupPage from "../pages/SignupPage/SignupPage";
-import FeedPage from "../pages/FeedPage/FeedPage";
-import PostDetailPage from "../pages/PostDetailPage/PostDetailPage"
+import React from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import SignupPage from '../pages/SignupPage/SignupPage'
+import LoginPage from '../pages/LoginPage/LoginPage'
+import PostPage from '../pages/PostPage/PostPage'
+import CommentPage from '../pages/CommentPage/CommentPage'
+import ErrorPage from '../pages/ErrorPage/ErrorPage'
 
 
-
-export default function Router() {
-
-  return (
-
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/feed" element={<FeedPage />} />
-        <Route path="/post/:id" element={<PostDetailPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
-  );
+const Router = () => {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<PostPage/>} />
+                <Route path="/login" element={<LoginPage/>} />
+                <Route path="/signup" element={<SignupPage/>} />
+                <Route path="/comments/:postId" element={<CommentPage/>} />
+                <Route path="*" element={<ErrorPage/>} />
+            </Routes>
+        </BrowserRouter>
+    )
 }
+
+export default Router
