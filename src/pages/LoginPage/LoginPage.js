@@ -1,122 +1,174 @@
+import React from 'react'
+import Header from '../../components/Header/Header'
+// import LoginForm from '../../components/Login/LoginForm'
+import logo from '../../assets/logo-labenu.svg'
+import { useForm } from "../../hooks/useForm"
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { BASE_URL, validateEmail, validatePassword } from '../../constants/constants'
+import { goToPostPage, goToSignupPage } from '../../routes/coordinator'
+import {
+  Flex,
+  Box,
+  FormControl,
+  Input,
+  Stack,
+  Button,
+  Text,
+  Image,
+  Divider,
+  Spinner,
+  InputRightElement,
+  InputGroup
+} from '@chakra-ui/react'
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import { LoginPageContainer } from './LoginPage.Style'
+import { useContext } from 'react'
+import { GlobalContext } from '../../contexts/GlobalContext'
 
-import { Flex, Box, Stack, Button, Heading, Text, useColorModeValue, Divider, Image, Spinner, } from '@chakra-ui/react';
-import { useContext, useEffect, useState } from 'react';
-import Vector1 from "../../assets/Vector1.svg"
-import Vector2 from "../../assets/Vector2.svg"
-import Vector3 from "../../assets/Vector3.svg"
-import Vector4 from "../../assets/Vector4.svg"
-import { useForm } from '../../hooks/use-form';
-import { validateEmail, validatePassword } from '../../constants/url';
-import { EmailInput } from '../../inputs/email';
-import { PasswordInput } from '../../inputs/password';
-import { useNavigate } from 'react-router-dom';
-import { goToSignupPage, goToFeedPage } from '../../routes/coordinator';
-import { Login } from '../../constants/url';
-import { GlobalContext } from '../../contexts/GlobalContext';
 
+const LoginPage = () => {
 
-export default function LoginPage() {
-
-  const [isEmailValid, setIsEmailValid] = useState(true)
-  const [isPasswordValid, setPasswordValid] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const context = useContext(GlobalContext)
+
+  const {  isLoggedIn } = context
+
   const [form, onChangeInputs, clearInputs] = useForm({
     email: "",
     password: ""
   })
+  const [ isEmailValid, setIsEmailValid ] = useState(true)
+  const [ isPasswordValid, setIsPasswordValid ] = useState(true)
+  const [ isLoading, setIsLoading ] = useState(false)
+  const [ showPassword, setShowPassword ] = useState(false)
 
-
-  useEffect(() => {
-    if (context.isAuth) {
-      goToFeedPage(navigate)
-    }
-  })
-
-  
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault()
-    console.log(form)
     setIsEmailValid(validateEmail(form.email))
-    setPasswordValid(validatePassword(form.password))
-    goToFeedPage(navigate)
+    setIsPasswordValid(validatePassword(form.password))
+  }
+
+  const login = async () => {
     try {
       setIsLoading(true)
-      const { token } = isEmailValid && isPasswordValid && await Login({
+
+      const body = {
         email: form.email,
         password: form.password
-      })
-      localStorage.setItem("labeddit.token", token);
+      }
+
+      const response = await axios.post(BASE_URL + "/users/login", body)
+      window.localStorage.setItem('labeddit-token', response.data.token)
       setIsLoading(false)
-      context.setIsAuth(true)
-      goToFeedPage(navigate)
+      goToPostPage(navigate)
 
     } catch (error) {
-      alert(error.response.data)
       setIsLoading(false)
+      console.error(error?.response?.data?.message)
     }
   }
 
-
   return (
+    <LoginPageContainer>
+      <Header isLoggedIn={isLoggedIn} />
+      <Flex
+        
+        minW={'428px'}
+       
 
-    <Box
-      spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}
-      align={'center'}
-      rounded={'lg'}
-      bg={useColorModeValue('white', 'gray.700')}
-      p={8}>
-      <Flex justifyContent={'center'} marginTop={"100px"}>
-        <Image src={Vector1} />
-        <Image src={Vector2} />
-      </Flex>
-      <Flex justifyContent={'center'} >
-        <Image src={Vector3} />
-        <Image src={Vector4} />
-      </Flex>
-      <Heading fontSize={'4xl'}>LabEddit
-      </Heading>
-      <Text fontSize={'16px'} color={'gray.600'}>
-        O projeto de rede social da Labenu ✌️
-      </Text>
-      <Box marginTop={"150px"}>
+        align={'start'}
+        justify={'center'}
+        >
+        <Stack spacing={4} maxW={'lg'} px={6} justify={'space-between'}>
+          <Stack align={'center'} justify={'start'}>
+            <Image boxSize='152px' src={logo} alt='Logo Labenu' />
+            <Text fontSize={'16px'} color={'gray.600'}>
+              O projeto de rede social da Labenu
+            </Text>
+          </Stack>
+          <Box
+            p={1}
+            rounded={'lg'}
+            size='363px'
+          >
+            <form onSubmit={onSubmit}>
+              <Stack spacing={2} py={16} minW='363px'>
+                <FormControl id="email" isInvalid={!isEmailValid}>
+                  <Input
+                    name='email'
+                    type="email"
+                    value={form.email}
+                    onChange={onChangeInputs}
+                    placeholder='E-mail'
+                    autoComplete='off' 
+                  />
+                </FormControl>
+                <FormControl id="password">
+                  <InputGroup>
+                  <Input
+                    name='password'
+                    type="password"
+                    value={form.password}
+                    onChange={onChangeInputs}
+                    placeholder='Senha'
+                    autoComplete='off'    
+                  />
+                  <InputRightElement h={"full"}>
+                    <Button
+                      variant={"ghost"}
+                      onClick={() =>
+                        setShowPassword((showPassword) => !showPassword)
+                      }
+                    >
+                      {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                    </Button>
+                </InputRightElement> 
+                </InputGroup>
 
-        <Stack spacing={1} >
-
-          <form onSubmit={onSubmit}>
-
-            <EmailInput isValid={isEmailValid} value={form.email} onChange={onChangeInputs} />
-
-            <PasswordInput isValid={isPasswordValid} value={form.password} onChange={onChangeInputs} />
-            <br />
-            <Button
-              margin={"10px"}
-              type="submit"
-              variant="form"
-              bgGradient='linear(90deg, #FF6489 0%, #F9B24E 100%)'
-              borderRadius={"27px"}
-              color={'white'}
-              _hover={{
-                bgGradient: 'linear(90deg, #FF6489 50%, #F9B24E 100%)',
-              }} width={"100%"}> {isLoading ? <Spinner /> : "Continuar"}   </Button>
-
-
-            <Divider borderColor={'#FE7E02'} margin={"10px"} />
-
-            <Button margin={"10px"} colorScheme={'#FE7E02'} variant='outline' borderRadius={"27px"} color={'#FE7E02'}
-              _hover={{
-                bgGradient: 'linear(90deg, #FF6489 50%, #F9B24E 100%)',
-                color: ' white '
-              }}
-              onClick={() => goToSignupPage(navigate)}
-              width={"100%"} >Crie uma conta!   </Button>
-
-          </form>
-
+                </FormControl>
+                <Stack spacing={2} py={10}>
+                  <Stack
+                    // direction={{ base: 'column', sm: 'row' }}
+                    align={'start'}
+                    justify={'space-between'}>
+                  </Stack>
+                  <Button
+                    onClick={login}
+                    type='submit'
+                    bgGradient='linear(90deg, #FF6489 0%, #F9B24E 100%)'
+                    boxShadow='2xl'
+                    borderRadius='27px's
+                    color={'white'}
+                    _hover={{
+                      bg: 'orange.500',
+                    }}>
+                      {isLoading ? <Spinner/> : 'Continuar'}                    
+                  </Button>
+                  <Stack divider={true}></Stack>
+                  <Divider colorScheme={'orange'} size="ex" variant="solid" />
+                  <Button
+                    onClick={() => goToSignupPage(navigate)}
+                    border='1px'
+                    borderStyle='solid'
+                    bordercolor='#FE7E02'
+                    borderRadius='27px'
+                    bgGradient={'white'}
+                    color={'#FE7E02'}
+                    _hover={{
+                      bg: 'orange.500',
+                    }}>
+                    Criar uma conta!
+                  </Button>
+                </Stack>
+              </Stack>
+            </form >
+          </Box>
         </Stack>
-      </Box>
-    </Box>
-
-  );
+      </Flex>
+    </LoginPageContainer>
+  )
 }
+
+export default LoginPage
