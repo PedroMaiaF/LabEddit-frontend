@@ -69,7 +69,9 @@ const SignupPage = () => {
       goToPostPage(navigate)
     } catch (error) {
       setIsLoading(false)
-    
+      console.error(error?.response?.data?.message)
+      console.log(error?.response?.data?.message)
+      window.alert(error?.response?.data?.message)
     }
   }
 
@@ -179,6 +181,9 @@ const SignupPage = () => {
                   >
                   Cadastrar
                 </Button>
+                <Text align={'center'}>
+                  Já possui uma conta? <Link onClick={() => goToLoginPage(navigate)} color={'blue.400'}>Login</Link>
+                </Text>
               </Stack>              
             </Stack>
           </Box>

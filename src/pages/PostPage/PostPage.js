@@ -12,7 +12,7 @@ import { useProtectedPage } from '../../hooks/useProtectedPage'
 const PostPage = () => {
   const context = useContext(GlobalContext)
 
-  const { posts, fetchPosts,} = context
+  const {posts, fetchPosts} = context
 
   useProtectedPage()
 
@@ -28,8 +28,9 @@ const PostPage = () => {
 
   const [ liked, setLiked ] = useState(false)
   const [ disliked, setDisLiked ] = useState(false)
-
-
+ 
+ 
+  
   const handlePostLike = (id) => {
       const body = {
           like: true
@@ -65,7 +66,6 @@ const PostPage = () => {
  
       } catch (error) {
         console.error(error?.response)
-       
       }
     }    
   
@@ -79,7 +79,7 @@ const PostPage = () => {
     }
  
   return (
-  
+    
       <PostPageContainer>
           <Header/>
           <EmptyPostCard/>
@@ -94,7 +94,7 @@ const PostPage = () => {
             />
           })}
       </PostPageContainer>
-  
+    
   )
 }
 

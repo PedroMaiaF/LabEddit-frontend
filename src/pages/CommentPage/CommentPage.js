@@ -19,7 +19,8 @@ const CommentPage = () => {
   const [ disliked, setDisLiked ] = useState(false)
 
   useProtectedPage()
- 
+  
+
   useEffect(() => {
     const token = window.localStorage.getItem('labeddit-token')
 
@@ -47,6 +48,9 @@ const CommentPage = () => {
       setIsLoading(false)
     } catch (error) {
       setIsLoading(false)
+      console.error(error?.response?.data)
+      console.log(error?.response)
+      window.alert("Erro ao buscar o post!")
     }
   }
   
@@ -70,7 +74,8 @@ const CommentPage = () => {
       setIsLoading(false)
     } catch (error) {
       setIsLoading(false)
- 
+      console.error(error?.response)
+      window.alert("Erro ao buscar os comentários!")
     }
   }  
   
@@ -81,7 +86,7 @@ const CommentPage = () => {
       likeDislikeComment(id,body)
       setLiked(!liked)
       setDisLiked(disliked)
-     
+      // fetchPosts()
     }
 
     const handleDislike = (id) => {
@@ -91,7 +96,7 @@ const CommentPage = () => {
       likeDislikeComment(id,body)
       setDisLiked(!disliked)
       setLiked(liked)
-    
+      // handleRefresh()
       }
 
     const likeDislikeComment = async (id, body) => {
@@ -107,7 +112,7 @@ const CommentPage = () => {
       
         await axios.put(BASE_URL + `/comments/${id}/like`, body, config)
 
-      
+        // console.log(response)
  
       } catch (error) {
         console.error(error?.response)
@@ -131,7 +136,8 @@ const CommentPage = () => {
       <PostCard
         isLoading={isLoading} 
         post={currentPost}
-       
+        // handleLike={handleLike} 
+        // handleDislike={handleDislike}
       />     
       <EmptyCommentCard
       fetchComments={fetchComments}

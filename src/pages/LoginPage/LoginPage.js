@@ -1,6 +1,5 @@
 import React from 'react'
 import Header from '../../components/Header/Header'
-// import LoginForm from '../../components/Login/LoginForm'
 import logo from '../../assets/logo-labenu.svg'
 import { useForm } from "../../hooks/useForm"
 import { useState } from 'react'
@@ -8,6 +7,10 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { BASE_URL, validateEmail, validatePassword } from '../../constants/constants'
 import { goToPostPage, goToSignupPage } from '../../routes/coordinator'
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import { LoginPageContainer } from './LoginPage.Style'
+import { useContext } from 'react'
+import { GlobalContext } from '../../contexts/GlobalContext'
 import {
   Flex,
   Box,
@@ -22,10 +25,6 @@ import {
   InputRightElement,
   InputGroup
 } from '@chakra-ui/react'
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-import { LoginPageContainer } from './LoginPage.Style'
-import { useContext } from 'react'
-import { GlobalContext } from '../../contexts/GlobalContext'
 
 
 const LoginPage = () => {
@@ -33,7 +32,7 @@ const LoginPage = () => {
   const navigate = useNavigate()
   const context = useContext(GlobalContext)
 
-  const {  isLoggedIn } = context
+  const { setIsLoggedIn, isLoggedIn } = context
 
   const [form, onChangeInputs, clearInputs] = useForm({
     email: "",
@@ -63,10 +62,11 @@ const LoginPage = () => {
       window.localStorage.setItem('labeddit-token', response.data.token)
       setIsLoading(false)
       goToPostPage(navigate)
-
+ 
     } catch (error) {
       setIsLoading(false)
       console.error(error?.response?.data?.message)
+      window.alert("Erro ao fazer o login!")
     }
   }
 
@@ -74,18 +74,19 @@ const LoginPage = () => {
     <LoginPageContainer>
       <Header isLoggedIn={isLoggedIn} />
       <Flex
-        
+     
         minW={'428px'}
-       
+      
 
         align={'start'}
         justify={'center'}
+        
         >
         <Stack spacing={4} maxW={'lg'} px={6} justify={'space-between'}>
           <Stack align={'center'} justify={'start'}>
             <Image boxSize='152px' src={logo} alt='Logo Labenu' />
             <Text fontSize={'16px'} color={'gray.600'}>
-              O projeto de rede social da Labenu
+              O projeto de rede social da Labenu!
             </Text>
           </Stack>
           <Box
@@ -130,7 +131,6 @@ const LoginPage = () => {
                 </FormControl>
                 <Stack spacing={2} py={10}>
                   <Stack
-                    // direction={{ base: 'column', sm: 'row' }}
                     align={'start'}
                     justify={'space-between'}>
                   </Stack>

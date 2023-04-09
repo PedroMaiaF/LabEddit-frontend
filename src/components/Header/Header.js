@@ -51,7 +51,7 @@ const Header = ({ isLoggedIn }) => {
                             fontFamily={"Noto Sans"}
                             variant={'link'}
                             colorScheme={"blue"}
-                            onClick={() => goToPostPage(navigate)}
+                            onClick={() => goToLoginPage(navigate)}
                         >Entrar
                         </Button>
                     </HeaderContainer>
